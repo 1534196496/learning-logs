@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  person.ll.dokypay.spring.boot.starter.DokypayAutoConfiguration

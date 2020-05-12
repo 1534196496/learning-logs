@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  person.ll.dlocal.spring.boot.starter.DlocalAutoConfiguration
