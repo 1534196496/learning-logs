@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "idempotent",
+      "type": "person.ll.idempotent.spring.boot.starter.IdempotentProperties",
+      "sourceType": "person.ll.idempotent.spring.boot.starter.IdempotentProperties"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
