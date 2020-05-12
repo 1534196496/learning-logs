@@ -4,10 +4,6 @@ package person.ll.dlocal.spring.boot.starter.constant;
  * Project       common-sdk
  *
  * @author wll
- * Company:       Big Player Group
- * Created Date:  2019/10/28
- * Description:   {类描述}
- * Copyright @ 2017-2019 BIGPLAYER.GROUP – Confidential and Proprietary
  */
 public interface HeadNameConstant {
     String HEAD_NAME_X_DATE = "X-Date";

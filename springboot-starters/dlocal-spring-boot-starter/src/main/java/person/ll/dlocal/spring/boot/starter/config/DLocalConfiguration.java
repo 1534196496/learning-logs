@@ -5,13 +5,10 @@ import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Project       common-sdk
  *
  * @author wll
- * Company:       Big Player Group
  * Created Date:  2019/10/8
  * Description:   {Dokypay 系统配置}
- * Copyright @ 2017-2019 BIGPLAYER.GROUP – Confidential and Proprietary
  */
 
 @ConfigurationProperties(

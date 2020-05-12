@@ -5,7 +5,6 @@ import cn.hutool.core.text.StrBuilder;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpStatus;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Project       common-sdk
  *
  * @author wll
- * Company:       Big Player Group
- * Created Date:  2019/10/28
- * Description:   {类描述}
- * Copyright @ 2017-2019 BIGPLAYER.GROUP – Confidential and Proprietary
  */
 @Slf4j
 public class DLocalService {
