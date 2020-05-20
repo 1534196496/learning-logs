@@ -6,6 +6,7 @@
         <artifactId>learning-logs-parent</artifactId>
         <groupId>preson.ll</groupId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../learning-logs-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
