@@ -1,3 +1,3 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-person.ll.idempotent.spring.boot.starter.IdempotentAutoConfiguration
+  person.ll.idempotent.spring.boot.starter.IdempotentAutoConfiguration

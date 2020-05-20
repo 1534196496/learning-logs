@@ -1,4 +1,4 @@
-package person.ll.idempotent.spring.boot.starter;
+package person.ll.idempotent.spring.boot.starter.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -19,8 +19,11 @@ import person.ll.idempotent.spring.boot.starter.exception.IdempotentException;
 import person.ll.idempotent.spring.boot.starter.strategy.store.IdempotentStore;
 import person.ll.idempotent.spring.boot.starter.util.MD5Util;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -48,10 +51,10 @@ public class IdempotentAspect implements EmbeddedValueResolverAware {
     @Around(value = "@annotation(idempotent)")
     public Object around(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable{
         String key;
-        if(idempotent.key().length() == 0){
+        if(idempotent.keys().length == 0){
             key = getDefaultKey(joinPoint);
         }else {
-            key = praseSpEL(joinPoint, idempotent.key());
+            key = Arrays.stream(idempotent.keys()).map(k -> praseSpEL(joinPoint, k)).collect(Collectors.joining(idempotent.delimiter()));
         }
 
         if(idempotentStore.setNx(key,key,idempotent.expire(),idempotent.timeunit())){
@@ -70,7 +73,7 @@ public class IdempotentAspect implements EmbeddedValueResolverAware {
     }
 
     private String getDefaultKey(ProceedingJoinPoint joinPoint) {
-        return MD5Util.MD5(joinPoint.getTarget().getClass().getName()+":"+joinPoint.getSignature().getName());
+        return MD5Util.MD5(joinPoint.getSignature().toLongString());
     }
 
 

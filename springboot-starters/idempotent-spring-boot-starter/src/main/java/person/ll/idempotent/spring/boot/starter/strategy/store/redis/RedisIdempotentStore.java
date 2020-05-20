@@ -1,13 +1,18 @@
 package person.ll.idempotent.spring.boot.starter.strategy.store.redis;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import person.ll.idempotent.spring.boot.starter.strategy.store.IdempotentStore;
 
 import java.util.concurrent.TimeUnit;
 
 public class RedisIdempotentStore implements IdempotentStore<String, String> {
 
-    private RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
+
+    public RedisIdempotentStore(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public String get(String key) {

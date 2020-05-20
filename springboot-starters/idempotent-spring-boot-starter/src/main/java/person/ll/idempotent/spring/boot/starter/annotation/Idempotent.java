@@ -7,11 +7,13 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Idempotent {
-    String key() default "";
+    String[] keys() default {};
 
     long expire() default -1;
 
     TimeUnit timeunit() default TimeUnit.MILLISECONDS;
 
     String msg() default "please try it latter!";
+
+    String delimiter() default ":";
 }
