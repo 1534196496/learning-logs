@@ -4,30 +4,36 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
 import person.ll.idempotent.spring.boot.starter.annotation.Idempotent;
 import person.ll.idempotent.spring.boot.starter.exception.IdempotentException;
-import person.ll.idempotent.spring.boot.starter.strategy.store.IdempotentStore;
+import person.ll.idempotent.spring.boot.starter.support.lock.IdempotentLockInfo;
+import person.ll.idempotent.spring.boot.starter.support.lock.IdempotentLockSupport;
 import person.ll.idempotent.spring.boot.starter.util.MD5Util;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Aspect
 @Component
-public class IdempotentAspect implements EmbeddedValueResolverAware {
+//@Order(value  = Ordered.HIGHEST_PRECEDENCE)
+public class IdempotentAspect implements InitializingBean {
+    private final static Logger logger = LoggerFactory.getLogger(IdempotentAspect.class);
 
     /**
      * 用于SpEL表达式解析.
@@ -38,38 +44,49 @@ public class IdempotentAspect implements EmbeddedValueResolverAware {
      */
     private final DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
+    private final List<IdempotentLockSupport> locks;
+
     @Autowired
-    private IdempotentStore<Object,Object> idempotentStore;
+    public IdempotentAspect(List<IdempotentLockSupport> locks) {
+        this.locks = locks;
+    }
 
 
-    private StringValueResolver stringValueResolver;
-
-
-
-
+    private static final ThreadLocal<IdempotentLockInfo<String>> idempotentLockHolder = new ThreadLocal<>();
 
     @Around(value = "@annotation(idempotent)")
     public Object around(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable{
+        IdempotentLockInfo<String> lockInfo = createLockInfo(joinPoint, idempotent);
+        for (IdempotentLockSupport lock : locks) {
+            if(!lock.support(idempotent.lockWay())){
+                continue;
+            }
+
+            if(lock.lock(lockInfo,idempotent.waitTime(),idempotent.leaseTime(),idempotent.timeUnit())){
+                try {
+                    idempotentLockHolder.set(lockInfo);
+                    return joinPoint.proceed();
+                }finally {
+                    idempotentLockHolder.remove();
+                    lock.unlock(lockInfo);
+                }
+            }else {
+                throw new IdempotentException(idempotent.msg());
+            }
+        }
+
+        throw new IdempotentException("not support lockWay!");
+    }
+
+    private <V>IdempotentLockInfo<V> createLockInfo(ProceedingJoinPoint joinPoint, Idempotent idempotent){
         String key;
         if(idempotent.keys().length == 0){
             key = getDefaultKey(joinPoint);
         }else {
             key = Arrays.stream(idempotent.keys()).map(k -> praseSpEL(joinPoint, k)).collect(Collectors.joining(idempotent.delimiter()));
         }
-
-        if(idempotentStore.setNx(key,key,idempotent.expire(),idempotent.timeunit())){
-            try {
-                return joinPoint.proceed();
-            }finally {
-                idempotentStore.delete(key);
-            }
-        }else {
-            throw new IdempotentException(idempotent.msg());
-        }
-
-
-
-
+        IdempotentLockInfo<V> lockInfo = IdempotentLockInfo.<V>create(key,(V)key);
+        return lockInfo;
     }
 
     private String getDefaultKey(ProceedingJoinPoint joinPoint) {
@@ -100,12 +117,8 @@ public class IdempotentAspect implements EmbeddedValueResolverAware {
         return Objects.requireNonNull(expression.getValue(context)).toString();
     }
 
-    /**
-     * 实现该接口能够获取Spring EL解析器，用户的自定义注解需要支持spel表达式的时候可以使用，非常方便
-     * @param resolver
-     */
     @Override
-    public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        this.stringValueResolver = resolver;
+    public void afterPropertiesSet() throws Exception {
+        logger.info("##################  IdempotentAspect worked  ##################");
     }
 }

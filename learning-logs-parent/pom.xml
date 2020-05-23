@@ -22,11 +22,21 @@
         <commons-codec.version>1.13</commons-codec.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <fastjson.version>1.2.60</fastjson.version>
+        <redisson-spring-boot-starter.version>3.12.5</redisson-spring-boot-starter.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>learning-logs-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -66,7 +76,21 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson-spring-boot-starter.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

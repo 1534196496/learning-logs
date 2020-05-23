@@ -16,11 +16,13 @@
         <module>spring-extends</module>
         <module>springboot-starters-test</module>
         <module>learning-logs-foundation</module>
+        <module>learning-logs-bom</module>
     </modules>
   <build>
       <plugins>
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
               <configuration>
                   <source>1.8</source>
                   <target>1.8</target>
@@ -28,5 +30,5 @@
           </plugin>
       </plugins>
   </build>
-    
+
 </project>

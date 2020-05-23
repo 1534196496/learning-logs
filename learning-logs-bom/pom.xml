@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>learning-logs</artifactId>
+        <groupId>preson.ll</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <artifactId>learning-logs-bom</artifactId>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>learning-logs-foundation</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <artifactId>dlocal-spring-boot-starter</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>dokypay-spring-boot-starter</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>idempotent-spring-boot-starter</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
