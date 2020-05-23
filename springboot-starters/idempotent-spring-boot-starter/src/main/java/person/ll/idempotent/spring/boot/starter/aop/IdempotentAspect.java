@@ -17,6 +17,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringValueResolver;
+import person.ll.idempotent.spring.boot.starter.IdempotentProperties;
 import person.ll.idempotent.spring.boot.starter.annotation.Idempotent;
 import person.ll.idempotent.spring.boot.starter.exception.IdempotentException;
 import person.ll.idempotent.spring.boot.starter.support.lock.IdempotentLockInfo;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
 
 @Aspect
 @Component
-//@Order(value  = Ordered.HIGHEST_PRECEDENCE)
-public class IdempotentAspect implements InitializingBean {
+//@Order(value  = "${idempotent.order}")
+public class IdempotentAspect implements InitializingBean, Ordered {
     private final static Logger logger = LoggerFactory.getLogger(IdempotentAspect.class);
 
     /**
@@ -47,9 +48,11 @@ public class IdempotentAspect implements InitializingBean {
     private final List<IdempotentLockSupport> locks;
 
     @Autowired
-    public IdempotentAspect(List<IdempotentLockSupport> locks) {
+    public IdempotentAspect(List<IdempotentLockSupport> locks,IdempotentProperties idempotentProperties) {
         this.locks = locks;
+        this.idempotentProperties = idempotentProperties;
     }
+    private final IdempotentProperties idempotentProperties;
 
 
     private static final ThreadLocal<IdempotentLockInfo<String>> idempotentLockHolder = new ThreadLocal<>();
@@ -71,11 +74,11 @@ public class IdempotentAspect implements InitializingBean {
                     lock.unlock(lockInfo);
                 }
             }else {
-                throw new IdempotentException(idempotent.msg());
+                throw IdempotentException.error(idempotent.msg());
             }
         }
 
-        throw new IdempotentException("not support lockWay!");
+        throw IdempotentException.error("not support lockWay!");
     }
 
     private <V>IdempotentLockInfo<V> createLockInfo(ProceedingJoinPoint joinPoint, Idempotent idempotent){
@@ -85,8 +88,7 @@ public class IdempotentAspect implements InitializingBean {
         }else {
             key = Arrays.stream(idempotent.keys()).map(k -> praseSpEL(joinPoint, k)).collect(Collectors.joining(idempotent.delimiter()));
         }
-        IdempotentLockInfo<V> lockInfo = IdempotentLockInfo.<V>create(key,(V)key);
-        return lockInfo;
+        return IdempotentLockInfo.<V>create(key,(V)key);
     }
 
     private String getDefaultKey(ProceedingJoinPoint joinPoint) {
@@ -120,5 +122,10 @@ public class IdempotentAspect implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         logger.info("##################  IdempotentAspect worked  ##################");
+    }
+
+    @Override
+    public int getOrder() {
+        return idempotentProperties.getOrder();
     }
 }

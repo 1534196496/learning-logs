@@ -4,5 +4,10 @@
       "name": "idempotent.enable",
       "type": "java.lang.String",
       "description": "enable idempotent."
-  }
+  },
+    {
+      "name": "idempotent.order",
+      "type": "java.lang.Integer",
+      "description": "aspect order."
+    }
 ] }

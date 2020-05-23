@@ -1,4 +1,4 @@
-package demo;
+package person.ll.idempotent.demo;
 
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
@@ -25,33 +25,33 @@ public class DemoApplication implements ApplicationContextAware {
 
     @GetMapping("/get")
     @Idempotent(
-            keys = {"'"+DEFAULT_PREFIX+"'", "#test2.getP1()", "#test2.p2", "'suffix'"},
+            keys = {"'"+DEFAULT_PREFIX+"'", "#model.getP1()", "#model.p2", "'suffix'"},
             waitTime = 0L,
             leaseTime = 5000L,
             msg = "go away",
             lockWay = LockWay.MYSQL
     )
-    public String get(Test test2)throws Exception{
+    public String get(Model model)throws Exception{
         Thread.sleep(10000);
         return "get";
     }
     @Idempotent(
-            keys = {"  '"+REDIS_PREFIX+"' + #test2.getP1() +  #test2.p2  +  'suffix' "},
+            keys = {"  '"+REDIS_PREFIX+"' + #model.getP1() +  #model.p2  +  'suffix' "},
             lockWay = LockWay.REDIS
     )
     @GetMapping("/get2")
-    public String get2(Test test2)throws Exception{
+    public String get2(Model model)throws Exception{
         Thread.sleep(10000);
         return "get2";
     }
 
 
     @Idempotent(
-            keys = {"  '"+REDISSION_PREFIX+"' + #test2.getP1() +  #test2.p2  +  'suffix' "},
+            keys = {"  '"+REDISSION_PREFIX+"' + #model.getP1() +  #model.p2  +  'suffix' "},
             lockWay = LockWay.REDISSION
     )
     @GetMapping("/get3")
-    public String get3(Test test2)throws Exception{
+    public String get3(Model model)throws Exception{
         Thread.sleep(10000);
         return "get3";
     }

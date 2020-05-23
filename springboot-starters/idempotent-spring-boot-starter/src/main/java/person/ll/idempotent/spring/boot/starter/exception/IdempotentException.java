@@ -1,7 +1,12 @@
 package person.ll.idempotent.spring.boot.starter.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class IdempotentException extends RuntimeException{
-    public IdempotentException(String message) {
+    private final static Logger logger = LoggerFactory.getLogger(IdempotentException.class);
+
+    private IdempotentException(String message) {
         super(message);
     }
 
@@ -13,7 +18,13 @@ public class IdempotentException extends RuntimeException{
         super(cause);
     }
 
-    protected IdempotentException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    private IdempotentException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
+    public static IdempotentException error(String errorMsg){
+        logger.error(errorMsg);
+        return new IdempotentException(errorMsg);
+    }
+
 }

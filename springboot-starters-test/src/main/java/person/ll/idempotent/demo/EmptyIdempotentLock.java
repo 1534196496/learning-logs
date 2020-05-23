@@ -1,4 +1,4 @@
-package demo;
+package person.ll.idempotent.demo;
 
 import org.springframework.stereotype.Component;
 import person.ll.idempotent.spring.boot.starter.enums.LockWay;

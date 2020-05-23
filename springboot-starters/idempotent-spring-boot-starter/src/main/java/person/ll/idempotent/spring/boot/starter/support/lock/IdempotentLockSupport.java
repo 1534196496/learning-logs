@@ -13,7 +13,7 @@ public abstract class IdempotentLockSupport implements IdempotentLockAble{
 
     public IdempotentLockSupport(LockWay lockWay) {
         if(lockWay == null){
-            throw new IdempotentException("lockWay must not be null");
+            throw IdempotentException.error("lockWay must not be null");
         }
         this.lockWay = lockWay;
     }
