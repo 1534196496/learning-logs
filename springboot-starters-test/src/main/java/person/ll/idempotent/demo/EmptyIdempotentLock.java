@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class EmptyIdempotentLock extends IdempotentLockSupport {
 
     public EmptyIdempotentLock() {
-        super(LockWay.MYSQL);
+        super(LockWay.CUSTOMIZE);
     }
 
 
