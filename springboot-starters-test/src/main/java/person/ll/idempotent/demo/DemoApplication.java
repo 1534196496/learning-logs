@@ -29,7 +29,7 @@ public class DemoApplication implements ApplicationContextAware {
             waitTime = 0L,
             leaseTime = 5000L,
             msg = "go away",
-            lockWay = LockWay.MYSQL
+            lockWay = LockWay.CUSTOMIZE
     )
     public String get(Model model)throws Exception{
         Thread.sleep(10000);
