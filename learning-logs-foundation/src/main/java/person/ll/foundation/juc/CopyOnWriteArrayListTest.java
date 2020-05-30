@@ -3,6 +3,11 @@ package person.ll.foundation.juc;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * CopyOnWriteArrayList只能保证数据的最终一致性，
+ * 不能保证数据的实时一致性——读操作读到的数据只是一份快照。
+ * 所以如果希望写入的数据可以立刻被读到，那CopyOnWriteArrayList并不适合。
+ */
 public class CopyOnWriteArrayListTest {
 
     public static void main(String[] args) throws Exception{
