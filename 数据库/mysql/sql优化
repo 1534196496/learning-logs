@@ -80,4 +80,10 @@ select num from a where exists(select 1 from b where num=a.num)
 25.尽量避免大事务操作，提高系统并发能力。26.尽量避免向客户端返回大数据量，若数据量过大，应该考虑相应需求是否合理。
 
 
+需要注意的是，当我执行select quantity from items where id=100 for update后。
+如果我是在第二个事务中执行select quantity from items where id=100（不带for update）仍能正常查询出数据，不会受第一个事务的影响。
+另外，MySQL还有个问题是select...for update语句执行中所有扫描过的行都会被锁上，因此在MySQL中用悲观锁务必须确定走了索引，而不是全表扫描，否则将会将整个数据表锁住。
+
+
+
 原文链接：https://blog.csdn.net/jie_liang/article/details/77340905
