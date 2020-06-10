@@ -17,6 +17,7 @@
         <module>springboot-starters-test</module>
         <module>learning-logs-foundation</module>
         <module>learning-logs-bom</module>
+        <module>learning-logs-demo</module>
     </modules>
   <build>
       <plugins>
