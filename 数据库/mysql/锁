@@ -38,6 +38,6 @@
      是基于 临键锁（行锁 + 间歇锁）来实现的，适用于 insert，update，delete， select ... for update， select ... lock in share mode 语句，以及加锁了的 select 语句。
 
 
-快照读可以防止幻读
-当前读需要结合临键锁（行锁+间隙锁）防止幻读
+RR 快照读 可以防止幻读
+RR 当前读 需要结合临键锁（行锁+间隙锁）防止幻读
 
