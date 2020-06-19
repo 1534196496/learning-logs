@@ -1,0 +1,43 @@
+
+
+
+
+
+1 行锁（Record Locks）
+ 在索引上加锁
+
+2 间隙锁（Gap Locks）
+     间隙锁本质上是用于阻止其他事务在该间隙内插入新记录，而自身事务是允许在该间隙内插入数据的。也就是说间隙锁的应用场景包括并发读取、并发更新、并发删除和并发插入
+     RU和RC隔离级别下不会有间隙锁,防止不了幻读,
+
+3 临键锁（Next-key Locks）
+   行锁+间隙锁
+4 共享锁/排他锁（Shared and Exclusive Locks）
+   共享锁  读取一行数据所需要的行锁
+   排他锁  更新数据所需要的行锁
+5 意向共享锁/意向排他锁（Intention Shared and Exclusive Locks）
+   意向共享锁   获得共享锁之前需要获得的表锁
+   意向排他锁   获得排他之前需要获得的表锁
+6 插入意向锁（Insert Intention Locks）
+  一种特殊的间隙锁 ,一个点
+7 自增锁（Auto-inc Locks）
+   表级锁    主要用于事务中插入自增字段，也就是我们最常用的自增主键id
+
+
+
+
+
+
+
+
+
+快照读
+     是基于 MVCC 和 undo log 来实现的，适用于简单 select 语句
+
+当前读
+     是基于 临键锁（行锁 + 间歇锁）来实现的，适用于 insert，update，delete， select ... for update， select ... lock in share mode 语句，以及加锁了的 select 语句。
+
+
+快照读可以防止幻读
+当前读需要结合临键锁（行锁+间隙锁）防止幻读
+
