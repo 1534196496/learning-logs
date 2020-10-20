@@ -1,0 +1,40 @@
+
+-- 每组随机取3个
+SELECT
+	*
+FROM
+	(
+SELECT
+IF
+	( mv.merchant_id = @merchant_id, @rank := @rank + 1, @rank := 1 ) AS rank,
+	@merchant_id := merchant_id AS tmp_merchant_id,
+	mv.*
+FROM
+	(
+	SELECT * FROM merchant_video WHERE merchant_id IN ( 365939, 100069, 122706 ) ORDER BY merchant_id, rand( ) DESC
+	) mv,
+	( SELECT @rank := 1 ) tmp
+	) s2
+WHERE
+	s2.rank <= 3
+
+
+-- 里指定位置距离排序
+SELECT
+	city,
+	(
+	2 * 6378.137 * ASIN(
+	SQRT(
+	POW( SIN( PI( ) * ( 31.198988- latitude ) / 360 ), 2 ) + COS( PI( ) * 121.468236 / 180 ) * COS( longitude * PI( ) / 180 ) * POW( SIN( PI( ) * ( 121.468236- longitude ) / 360 ), 2 )
+	)
+	)
+	) AS distance
+FROM
+	merchants
+WHERE
+	id IN ( 13, 18, 16, 10, 20, 15, 17, 19 )
+ORDER BY
+	distance ASC
+
+
+SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'wedding' ORDER BY create_time DESC;
